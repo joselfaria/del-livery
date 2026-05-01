@@ -1,79 +1,73 @@
-import AppBar from "@/components/AppBar";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { useRouter } from 'expo-router';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export default function index() {
-  return <View style={styles.container}>
-    <View style={styles.header}>    
-      <Image source={require("../assets/icon.jpg")} style={styles.image} />
-      <Text style={styles.logo}>Del-Livery</Text>
-    </View>
+export default function Welcome() {
+  const router = useRouter();
 
-    <View>
-      <Text style={styles.bigText}>
-        Tenha lucro ajudando o meio ambiente
-      </Text>
-      <Text style={styles.smallText}>
-        Sua chance de conseguir ajudar no aluguel de uma maneira simples economicamente viavel e sustentavel para o meio ambiente.
-      </Text>
-      <TouchableOpacity style={{ backgroundColor: "#1a1a1a", padding: 12, borderRadius: 6, alignSelf: "center", paddingHorizontal: 135 }}>
-        <Text style={{ color: "#ffffff", fontSize: 14, fontWeight: "600" }}>Cadastrar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={{ backgroundColor: "#d3d3d3", padding: 12, borderRadius: 6, alignSelf: "center", marginTop: 10, paddingHorizontal: 150 }}>
-        <Text style={{ color: "#000000", fontSize: 14, fontWeight: "600" }}>Login</Text>
-      </TouchableOpacity>
-    </View>
-    <Text style={{ fontSize: 22, textAlign: "left", color: "#000000", marginTop: 40, marginLeft: 20, fontWeight: "bold" }}>
-        Como funciona
-    </Text>
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        
+        {/* Cabeçalho / Logo */}
+        <View style={styles.logoContainer}>
+          <Text style={styles.logoText}>🚲 Del-Livery</Text>
+        </View>
 
-    
+        <View style={styles.content}>
+          <Text style={styles.title}>Bem vindo</Text>
+          <Text style={styles.subtitle}>
+            Comece a ganhar dinheiro ou economizar de maneira sustentavel
+          </Text>
 
-    <AppBar />
-  </View>;
+          {/* Botões - Ambos Escuros conforme wireframe */}
+          <TouchableOpacity style={styles.buttonSolid} onPress={() => alert('Em breve!')}>
+            <Text style={styles.buttonSolidText}>Quero ser um Ciclista</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.buttonSolid}
+            onPress={() => router.push('/cadastro-associado')}
+          >
+            <Text style={styles.buttonSolidText}>Quero ser um Associado</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.footerSection}>
+          <TouchableOpacity style={styles.loginLink} onPress={() => router.push('/login')}>
+            <Text style={styles.loginText}>
+              Já possui uma conta? <Text style={styles.loginTextBold}>Fazer Login</Text>
+            </Text>
+          </TouchableOpacity>
+
+          {/* Botões Sociais */}
+          <View style={styles.socialContainer}>
+            <TouchableOpacity style={styles.socialButton}><Text style={styles.socialText}>f</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton}><Text style={styles.socialText}>G</Text></TouchableOpacity>
+          </View>
+        </View>
+
+        <Text style={styles.footerCopyright}>© 2026 Del-Livery Inc.</Text>
+      </View>
+    </SafeAreaView>
+  );
 }
 
-const styles = {
-  header: {
-    backgroundColor: "#ffffff",
-    padding: "10px",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    shadowColor: '#c5c5c5',
-    shadowOffset: { width: 0, height: 6 }, 
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-  },
-  image : {
-    width: 30,
-    height: 20,
-    alignSelf: "left",
-    marginBottom: 20,
-  },
-  container: {
-    backgroundColor: "#f9fafb",
-  },
-  logo: {
-    fontSize: 12,
-    marginBottom: 20,
-    fontWeight: "bold",
-  },
-  bigText: {
-    paddingTop: 40,
-    fontSize: 30,
-    fontFamily: "SourceSansPro-Regular",
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  smallText: {
-    fontSize: 12,
-    paddingHorizontal: 55,
-    paddingBottom: 40,
-    textAlign: "center",
-    color: "#8d8d8d",
-  },
-
-} as const;
+const styles = StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: '#FFFFFF' },
+  container: { flex: 1, paddingHorizontal: 30, paddingVertical: 40, justifyContent: 'space-between' },
+  logoContainer: { alignItems: 'center', marginTop: 20 },
+  logoText: { fontSize: 20, fontWeight: 'bold', color: '#1F2937' },
+  content: { flex: 1, justifyContent: 'center' },
+  title: { fontSize: 24, fontWeight: 'bold', color: '#1F2937', marginBottom: 10, textAlign: 'left' },
+  subtitle: { fontSize: 14, color: '#6B7280', textAlign: 'left', marginBottom: 40, lineHeight: 20 },
+  buttonSolid: { backgroundColor: '#1F2937', paddingVertical: 16, borderRadius: 6, marginBottom: 15, alignItems: 'center' },
+  buttonSolidText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 14 },
+  footerSection: { alignItems: 'center', marginBottom: 30 },
+  loginLink: { marginBottom: 30 },
+  loginText: { color: '#6B7280', fontSize: 14 },
+  loginTextBold: { color: '#1F2937', fontWeight: 'bold' },
+  socialContainer: { flexDirection: 'row', gap: 15 },
+  socialButton: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#F3F4F6', justifyContent: 'center', alignItems: 'center' },
+  socialText: { fontSize: 16, fontWeight: 'bold', color: '#1F2937' },
+  footerCopyright: { textAlign: 'center', fontSize: 12, color: '#9CA3AF' }
+});
