@@ -1,3 +1,4 @@
+import Header from '@/components/Header';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -19,6 +20,7 @@ export default function Login() {
       );
 
       if (comercianteEncontrado) {
+        await AsyncStorage.setItem('@del_livery:currentUser', JSON.stringify(comercianteEncontrado));
         router.push('/painel-lojista'); 
         return; 
       }
@@ -33,12 +35,10 @@ export default function Login() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        
-        <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>🚲 Del-Livery</Text>
-        </View>
 
+      <Header route="/" />
+
+      <View style={styles.container}>
         <View style={styles.content}>
           <Text style={styles.title}>Login</Text>
           <Text style={styles.subtitle}>Complete seu login</Text>
@@ -76,14 +76,15 @@ export default function Login() {
           </View>
 
           <View style={styles.linksContainer}>
-            <TouchableOpacity onPress={() => router.push('/cadastro-associado')}>
+            <TouchableOpacity onPress={() => router.push('/painel-lojista')}>
               <Text style={styles.linkText}>Ainda possui uma conta? <Text style={styles.linkTextBold}>Criar Conta</Text></Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.forgotPassword}>
-              <Text style={styles.linkTextBold}>Esqueci minha senha?</Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.forgotPassword}>
+            <Text style={styles.linkTextBold}>Esqueci minha senha?</Text>
+          </TouchableOpacity>
           </View>
+
         </View>
 
         <Text style={styles.footerCopyright}>© 2026 Del-Livery Inc.</Text>

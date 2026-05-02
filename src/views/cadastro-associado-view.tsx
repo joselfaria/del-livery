@@ -1,3 +1,4 @@
+import Header from '@/components/Header';
 import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { styles } from '../styles/cadastro';
 
@@ -23,11 +24,9 @@ export function CadastroAssociadoView({ form, setForm, handleCadastro, irParaLog
   }
   return (
     <SafeAreaView style={styles.safeArea}>
+      <Header route="/" />
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        
-        <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>🚲 Del-Livery</Text>
-        </View>
 
         <Text style={styles.title}>Seja um Associado</Text>
         <Text style={styles.subtitle}>
