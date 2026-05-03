@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import Header from '../components/Header';
 import { resetDatabase } from '../services/database';
 import { DARK, styles } from '../styles/index.styles';
@@ -87,7 +87,13 @@ export default function Welcome() {
           <View style={styles.partnersList}>
             <View style={styles.partnerCard}>
               <View style={styles.partnerImg}>
-                <Ionicons name="image-outline" size={28} color="#ccc" />
+                <Image
+                  source={{
+                    uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAtdax82HYYvdrXWgmXzmL807gWeJCT04IHw&s',
+                  }}
+                  style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                  resizeMode="cover"
+                />
               </View>
               <Text style={styles.partnerName}>Rota</Text>
               <Text style={styles.partnerRating}>★ 4.8 (120)</Text>
@@ -95,7 +101,13 @@ export default function Welcome() {
 
             <View style={styles.partnerCard}>
               <View style={styles.partnerImg}>
-                <Ionicons name="image-outline" size={28} color="#ccc" />
+                <Image
+                  source={{
+                    uri: 'https://cdn.samais.com.br/portal/principal/arquivos/listas/32049/capa/dest_20220222_esquinao-super_645.jpg',
+                  }}
+                  style={{ width: '100%', height: '100%', borderRadius: 8 }}
+                  resizeMode="cover"
+                />
               </View>
               <Text style={styles.partnerName}>Esquinão</Text>
               <Text style={styles.partnerRating}>★ 4.5 (89)</Text>

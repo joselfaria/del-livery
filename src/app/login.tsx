@@ -76,7 +76,7 @@ export default function Login() {
           </View>
 
           <View style={styles.linksContainer}>
-            <TouchableOpacity onPress={() => router.push('/painel-lojista')}>
+            <TouchableOpacity onPress={() => router.push('/painel-associado')}>
               <Text style={styles.linkText}>Ainda possui uma conta? <Text style={styles.linkTextBold}>Criar Conta</Text></Text>
             </TouchableOpacity>
 

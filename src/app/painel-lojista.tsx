@@ -15,7 +15,7 @@ import {
   View,
 } from 'react-native';
 import ProfilePopup, { CurrentUser } from '../components/ProfilePopup';
-import { Delivery, DeliveryStatus, getDeliveries, updateDeliveryStatus } from '../services/deliveries';
+import { Delivery, DeliveryStatus, getDeliveries } from '../services/deliveries';
 
 type StatusConfig = {
   label: string;
@@ -95,18 +95,11 @@ function EmptyState({ text }: { text: string }) {
 
 function ActiveOrderCard({
   order,
-  onCancel,
-  onStart,
-  onFinish,
 }: {
   order: Delivery;
-  onCancel: (id: string) => void;
-  onStart: (id: string) => void;
-  onFinish: (id: string) => void;
 }) {
   const statusCfg = STATUS_CONFIG[order.status];
   const isWaiting = order.status === 'aguardando_coleta';
-  const isOnTheWay = order.status === 'a_caminho';
 
   return (
     <View style={styles.activeCard}>
@@ -127,24 +120,6 @@ function ActiveOrderCard({
           </Text>
         </View>
 
-        <View style={styles.cardActions}>
-          {isWaiting && (
-            <>
-              <TouchableOpacity style={styles.startBtn} onPress={() => onStart(order.id)}>
-                <Text style={styles.startBtnText}>Iniciar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.cancelBtn} onPress={() => onCancel(order.id)}>
-                <Text style={styles.cancelBtnText}>Cancelar</Text>
-              </TouchableOpacity>
-            </>
-          )}
-
-          {isOnTheWay && (
-            <TouchableOpacity style={styles.finishBtn} onPress={() => onFinish(order.id)}>
-              <Text style={styles.finishBtnText}>Concluir</Text>
-            </TouchableOpacity>
-          )}
-        </View>
       </View>
     </View>
   );
@@ -200,11 +175,15 @@ function BottomNav({
 
 export default function PainelLojista() {
   const router = useRouter();
-  const [storeName, setStoreName] = useState('Restaurante Central');
+  const [storeName, setStoreName] = useState('');
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [profileVisible, setProfileVisible] = useState(false);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const getMerchantId = (user: CurrentUser) => {
+    return user.id || user.email?.toLowerCase();
+  };
 
   const activeOrders = deliveries.filter((delivery) => (
     delivery.status === 'aguardando_coleta' || delivery.status === 'a_caminho'
@@ -220,19 +199,26 @@ export default function PainelLojista() {
         AsyncStorage.getItem('@del_livery:currentUser'),
       ]);
 
-      setDeliveries(savedDeliveries);
-
       if (currentUserRaw) {
         const currentUser = JSON.parse(currentUserRaw);
+        const merchantId = getMerchantId(currentUser);
+        const merchantDeliveries = savedDeliveries.filter(
+          (delivery) => merchantId && delivery.merchantId === merchantId
+        );
+
         setCurrentUser(currentUser);
         setStoreName(currentUser.nome || currentUser.name);
+        setDeliveries(merchantDeliveries);
+        return;
       }
+
+      router.replace('/login' as any);
     } catch {
       Alert.alert('Erro', 'Não foi possível carregar as entregas.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   useFocusEffect(
     useCallback(() => {
@@ -255,17 +241,14 @@ export default function PainelLojista() {
     router.replace('/' as any);
   };
 
-  const handleStatusChange = async (id: string, status: DeliveryStatus) => {
-    const updated = await updateDeliveryStatus(id, status);
-    setDeliveries(updated);
-  };
-
-  const handleCancel = (id: string) => {
-    Alert.alert('Cancelar entrega', 'Deseja cancelar esta entrega?', [
-      { text: 'Não', style: 'cancel' },
-      { text: 'Sim', style: 'destructive', onPress: () => handleStatusChange(id, 'cancelado') },
-    ]);
-  };
+  if (!currentUser) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header onProfilePress={() => undefined} />
+        <ActivityIndicator color={DARK} style={styles.loading} />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -290,9 +273,6 @@ export default function PainelLojista() {
             <ActiveOrderCard
               key={order.id}
               order={order}
-              onCancel={handleCancel}
-              onStart={(id) => handleStatusChange(id, 'a_caminho')}
-              onFinish={(id) => handleStatusChange(id, 'concluido')}
             />
           ))
         ) : (

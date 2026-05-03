@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -23,6 +24,12 @@ export default function NewDeliveryScreen() {
 
   const generateId = () => {
     return `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  };
+
+  const getMerchantId = async () => {
+    const currentUserRaw = await AsyncStorage.getItem('@del_livery:currentUser');
+    const currentUser = currentUserRaw ? JSON.parse(currentUserRaw) : null;
+    return currentUser?.id || currentUser?.email?.toLowerCase();
   };
 
   const validate = () => {
@@ -50,9 +57,18 @@ export default function NewDeliveryScreen() {
 
     setLoading(true);
     try {
+      const merchantId = await getMerchantId();
+
+      if (!merchantId) {
+        Alert.alert('Sessão expirada', 'Faça login novamente para criar uma entrega.');
+        router.replace('/login' as any);
+        return;
+      }
+
       const delivery: Delivery = {
         id: generateId(),
         number: generateOrderNumber(),
+        merchantId,
         recipientName: recipientName.trim(),
         recipientPhone: recipientPhone.trim(),
         address: address.trim(),

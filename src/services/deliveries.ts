@@ -5,6 +5,8 @@ export type DeliveryStatus = 'aguardando_coleta' | 'a_caminho' | 'concluido' | '
 export type Delivery = {
   id: string;
   number: string;
+  merchantId?: string;
+  cyclistId?: string;
   recipientName: string;
   recipientPhone: string;
   address: string;
@@ -31,6 +33,18 @@ export async function updateDeliveryStatus(id: string, status: DeliveryStatus): 
   const deliveries = await getDeliveries();
   const updated = deliveries.map((delivery) => (
     delivery.id === id ? { ...delivery, status } : delivery
+  ));
+
+  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  return updated;
+}
+
+export async function assignDeliveryToCyclist(id: string, cyclistId: string): Promise<Delivery[]> {
+  const deliveries = await getDeliveries();
+  const updated = deliveries.map((delivery) => (
+    delivery.id === id
+      ? { ...delivery, cyclistId, status: 'a_caminho' as DeliveryStatus }
+      : delivery
   ));
 
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));

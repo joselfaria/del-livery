@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 export type ProfileUser = {
+  id?: string;
   nome?: string;
   name?: string;
   email?: string;
