@@ -25,7 +25,24 @@ export default function Login() {
         return; 
       }
 
-      // Lógica do entregador entrará aqui
+      const entregadoresSalvos = await AsyncStorage.getItem('@usuarios_entregadores');
+      const listaEntregadores = entregadoresSalvos ? JSON.parse(entregadoresSalvos) : [];
+
+      const entregadorEncontrado = listaEntregadores.find(
+        (user: any) =>
+          user.email.toLowerCase() === email.toLowerCase() &&
+          user.senha === senha
+      );
+
+      if (entregadorEncontrado) {
+        await AsyncStorage.setItem(
+          '@del_livery:currentUser',
+          JSON.stringify(entregadorEncontrado)
+        );
+
+        router.push('/painel-associado');
+        return;
+      }
 
       Alert.alert('Erro', 'E-mail ou senha incorretos.');
     } catch (error) {
